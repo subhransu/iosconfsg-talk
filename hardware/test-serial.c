@@ -85,7 +85,7 @@ int main(int argc, char * argv[]){
 
 	int fd = openSerialPort(serialPortName);
 
-	if(fd == 1){
+	if(fd == -1){
 		printf("Error in opening %s\n", serialPortName);
 	} else{
 		printf("%s opened Successfully\n", serialPortName);

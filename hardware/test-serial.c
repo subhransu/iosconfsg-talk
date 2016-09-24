@@ -52,7 +52,7 @@ void setSerialPortSettings(int fd, int charsToReadBeforeReturn){
 	//Turn off canonical mode
  	srSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
  	// disable output processing
- 	srSettings.c_oflag &= ~OPOST;
+ 	//srSettings.c_oflag &= ~OPOST;
  
 	//Wait for certain number of characters to come in before returning
  	srSettings.c_cc[VMIN] = charsToReadBeforeReturn;
@@ -77,7 +77,7 @@ void closeSerialPort(int fd){
 int main(int argc, char * argv[]){
 
 	if(argc < 2){
-		printf("Insufficent arguments, Need Serial Port name\n");
+		printf("Insufficent arguments, need Serial Port name\n");
 		return 1;
 	}
 
@@ -106,13 +106,20 @@ int main(int argc, char * argv[]){
 
 		if(bytesRead == SIZE_BYTES_READ_BLOCKING){
 			
-			if(tempBuffer[0] == '\n' || currentPosition >= (SIZE_READ_BUFFER - 1)){ 
-				/* We print wen we:
+			if(tempBuffer[0] == '\n' || currentPosition >= (SIZE_READ_BUFFER - 2)){ 
+				/* We print when we:
 					1. receive a newline character. 
 					2. reach buffer capacity of one less to reserve the last character for '\0'
-				*/	
+				*/
+
+				//If we are at the end, we write the last character to the buffer
+				if(currentPosition >= (SIZE_READ_BUFFER - 2)){
+					lineBuffer[currentPosition] = tempBuffer[0];
+					currentPosition++;
+				}
+
 				lineBuffer[currentPosition] = '\0';
-				printf("%s\n", lineBuffer);
+				puts(lineBuffer);
 				currentPosition = 0;
 
 			} else {

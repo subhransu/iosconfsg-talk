@@ -1,8 +1,8 @@
-//Reference from http://stackoverflow.com/questions/31465943/using-termios-in-swift
 import Glibc
 
 let SIZE_BYTES_READ_BLOCKING : cc_t = 1
 let SIZE_READ_BUFFER = 32
+let SERIAL_OPEN_FAIL : Int32 = -1
 
 func openSerialPort(portName : String) -> Int32{
 	//O_RDONLY opens the serial port as read-only
@@ -100,9 +100,9 @@ func testMainFunction(arguments : [String]){
 
 	let fd : Int32 = openSerialPort(portName : serialPortName)
 
-	if(fd == -1){
+	if(fd == SERIAL_OPEN_FAIL){
 		print("Error in opening port " + serialPortName);
-	} else{
+	} else {
 		print(serialPortName + " opened successfully");
 	}
 

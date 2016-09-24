@@ -17,12 +17,14 @@ func onButtonPressed(){
 	}
 }
 
-let gpioHandler = GPIOHandler(buttonPressed: onButtonPressed)
+let gpioHandler = GPIOHandler(tempHumdSerialPort : "/dev/ttyUSB0", buttonPressed: onButtonPressed)
 
 
 while(true){
 
-	usleep(100000)
+	usleep(1000000)
+
+	print("main")
 	//var tempHumdity = gpioHandler.getTempAndHumidity()
 
 	//print(tempHumdity)

@@ -4,7 +4,6 @@ https://chrisheydrick.com/2012/06/17/how-to-read-serial-data-from-an-arduino-in-
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <fcntl.h>  /* File Control Definitions          */
 #include <termios.h>/* POSIX Terminal Control Definitions*/
 #include <unistd.h> /* UNIX Standard Definitions         */
@@ -51,8 +50,6 @@ void setSerialPortSettings(int fd, int charsToReadBeforeReturn){
  
 	//Turn off canonical mode
  	srSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
- 	// disable output processing
- 	//srSettings.c_oflag &= ~OPOST;
  
 	//Wait for certain number of characters to come in before returning
  	srSettings.c_cc[VMIN] = charsToReadBeforeReturn;

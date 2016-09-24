@@ -89,7 +89,6 @@ func blockingReadLineFromSerialPort(fd : Int32) -> String{
 
 
 //Call this function from your main.swift with Commandline.arguments
-
 func testMainFunction(arguments : [String]){
 
 	if(arguments.count < 2){

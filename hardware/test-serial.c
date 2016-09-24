@@ -54,7 +54,7 @@ void setSerialPortSettings(int fd, int charsToReadBeforeReturn){
 	//Wait for certain number of characters to come in before returning
  	srSettings.c_cc[VMIN] = charsToReadBeforeReturn;
  	
- 	// no minimum time to wait before read returns
+ 	//No minimum time to wait before read returns
  	srSettings.c_cc[VTIME] = 0;
  
 	//Commit settings
@@ -65,7 +65,6 @@ int readBytesFromPort(int fd, char buf[], int size){
 	int bytesRead = read(fd, buf, size);
 	return bytesRead;
 }
-
 
 void closeSerialPort(int fd){
 	close(fd);
@@ -81,7 +80,6 @@ int main(int argc, char * argv[]){
 	char * serialPortName = argv[1];
 
 	printf("Opening port %s\n", serialPortName);
-	
 
 	int fd = openSerialPort(serialPortName);
 
@@ -101,7 +99,7 @@ int main(int argc, char * argv[]){
 	while(1){
 		int bytesRead = readBytesFromPort(fd, tempBuffer, 1);
 
-		if(bytesRead == SIZE_BYTES_READ_BLOCKING){
+		if(bytesRead > 0){
 			
 			if(tempBuffer[0] == '\n' || currentPosition >= (SIZE_READ_BUFFER - 2)){ 
 				/* We print when we:

@@ -43,6 +43,9 @@ func setSerialPortSettings(fd : Int32, charsToReadBeforeReturn : cc_t){
 	//Turn off canonical mode
 	srSettings.c_lflag &= ~(UInt32(ICANON) | UInt32(ECHO) | UInt32(ECHOE) | UInt32(ISIG));
 
+	//Disable output processing. Not needed now
+ 	//srSettings.c_oflag &= ~(UInt32(OPOST));
+
 	//Wait for certain number of characters to come in before returning
 	//VMIN is position 6 in the tuple. C fixed arrays are imported as tuples in Swift
 	//Use print(VMIN) to check the value for your platform

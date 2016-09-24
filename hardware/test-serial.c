@@ -50,6 +50,9 @@ void setSerialPortSettings(int fd, int charsToReadBeforeReturn){
  
 	//Turn off canonical mode
  	srSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+
+ 	//Disable output processing. Not needed now
+ 	//srSettings.c_oflag &= ~OPOST;
  
 	//Wait for certain number of characters to come in before returning
  	srSettings.c_cc[VMIN] = charsToReadBeforeReturn;

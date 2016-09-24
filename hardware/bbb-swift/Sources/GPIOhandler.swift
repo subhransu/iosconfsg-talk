@@ -34,33 +34,6 @@ class GPIOHandler {
 		button.direction = .IN
 
 
-
-		serialFileDescriptor = openSerialPort(portName : tempHumdSerialPort)
-		if(serialFileDescriptor == SERIAL_OPEN_FAIL){
-			print("Opening serial port " + tempHumdSerialPort + " failed")
-		} else {
-			setSerialPortSettings(fd : serialFileDescriptor, charsToReadBeforeReturn : SIZE_BYTES_READ_BLOCKING)
-
-			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
-			//Obtain Void pointer to self
-			//To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
-			let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
-
-			var t1 = pthread_t()
-
-			let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
-				externalObserver in
- 				
- 				let actualSelf = Unmanaged<GPIOHandler>.fromOpaque(externalObserver!).takeUnretainedValue()
-				actualSelf.pollSerial()
-            	
-            	return nil
-        	}
-
-        	//Pass observer to the C function for it to call outside
-        	pthread_create(&t1, nil, pthreadFunc, observer)
-        }
-
 		button.onRaising{
     		gpio in
 		
@@ -73,6 +46,34 @@ class GPIOHandler {
     			self.buttonPressedHandler()
 			}
 		}
+
+
+		serialFileDescriptor = openSerialPort(portName : tempHumdSerialPort)
+		
+		if(serialFileDescriptor == SERIAL_OPEN_FAIL){
+			print("Opening serial port " + tempHumdSerialPort + " failed")
+		} else {
+			setSerialPortSettings(fd : serialFileDescriptor, charsToReadBeforeReturn : SIZE_BYTES_READ_BLOCKING)
+
+			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
+			//Obtain Void pointer to self
+			//To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
+			let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
+
+			var backgroundPthread = pthread_t()
+
+			let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
+				externalObserver in
+ 				
+ 				let actualSelf = Unmanaged<GPIOHandler>.fromOpaque(externalObserver!).takeUnretainedValue()
+				actualSelf.pollSerial()
+            	
+            	return nil
+        	}
+
+        	//Pass observer to the C function for it to call outside
+        	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
+        }
 
 	}
 

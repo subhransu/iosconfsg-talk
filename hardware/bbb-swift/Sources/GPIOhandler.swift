@@ -101,8 +101,6 @@ class GPIOHandler {
 				//Send data to callback
 				tempHumdHandler(temperature, humidity)
 
-			} else {
-				print("Received data format is incorrect")
 			}
 		}
 	}

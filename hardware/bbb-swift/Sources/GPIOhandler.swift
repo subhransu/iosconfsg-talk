@@ -18,11 +18,15 @@ class GPIOHandler {
 	var serialFileDescriptor : Int32
 
 	var buttonPressedHandler : () -> Void
+	var tempHumdHandler : (Float, Float) -> Void
+
 
 	var timeSinceLastPressed = NSDate().timeIntervalSince1970
 
-	init(tempHumdSerialPort : String, buttonPressed :  @escaping ()-> Void){
+	init(tempHumdSerialPort : String, receiveTempHumdData : @escaping (Float, Float) -> Void, buttonPressed :  @escaping ()-> Void){
 		buttonPressedHandler = buttonPressed
+		tempHumdHandler = receiveTempHumdData
+
 
 		redLED = gpios[PIN_LED_RED]!
 		redLED.direction = .OUT
@@ -33,26 +37,13 @@ class GPIOHandler {
 		button = gpios[PIN_BUTTON]!
 		button.direction = .IN
 
-
-		button.onRaising{
-    		gpio in
-		
-    		//Debouncing logic, only call closure when needed
-			let currentTime = NSDate().timeIntervalSince1970
-			let elapsedTime = currentTime - self.timeSinceLastPressed
-
-			if(elapsedTime > self.DEBOUNCE_DELAY){
-				self.timeSinceLastPressed = currentTime
-    			self.buttonPressedHandler()
-			}
-		}
-
-
 		serialFileDescriptor = openSerialPort(portName : tempHumdSerialPort)
 		
 		if(serialFileDescriptor == SERIAL_OPEN_FAIL){
 			print("Opening serial port " + tempHumdSerialPort + " failed")
 		} else {
+			print("Serial port " + tempHumdSerialPort + " opened successfully")
+			
 			setSerialPortSettings(fd : serialFileDescriptor, charsToReadBeforeReturn : SIZE_BYTES_READ_BLOCKING)
 
 			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
@@ -75,13 +66,44 @@ class GPIOHandler {
         	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
         }
 
+        button.onRaising{
+    		gpio in
+		
+    		//Debouncing logic, only call closure when needed
+			let currentTime = NSDate().timeIntervalSince1970
+			let elapsedTime = currentTime - self.timeSinceLastPressed
+
+			if(elapsedTime > self.DEBOUNCE_DELAY){
+				self.timeSinceLastPressed = currentTime
+    			self.buttonPressedHandler()
+			}
+		}
+
+
 	}
 
 
 	func pollSerial(){
 		while(true){
 			let result : String = blockingReadLineFromSerialPort(fd : serialFileDescriptor)
-			print(result)
+
+			let resultTrimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)
+			
+			let resultArr : [String] = resultTrimmed.components(separatedBy: " ")
+
+			if(resultArr.count == 2){
+				let temperatureString : String = resultArr[0]
+				let humidityString : String = resultArr[1];
+
+				let temperature : Float = Float(temperatureString)!
+				let humidity : Float = Float(humidityString)!
+
+				//Send data to callback
+				tempHumdHandler(temperature, humidity)
+
+			} else {
+				print("Received data format is incorrect")
+			}
 		}
 	}
 

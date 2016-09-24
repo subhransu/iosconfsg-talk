@@ -6,7 +6,6 @@ class GPIOHandler {
 	let PIN_LED_RED = GPIOName.P9
 	let PIN_RELAY_SWITCH = GPIOName.P10
 	let PIN_BUTTON = GPIOName.P17
-	let PIN_DHT22 = GPIOName.P4
 
 	let DEBOUNCE_DELAY = 0.3
 
@@ -15,20 +14,13 @@ class GPIOHandler {
 	var redLED : GPIO
 	var relaySwitch : GPIO
 	var button : GPIO
-	var dht22 : GPIO
 
 	var buttonPressedHandler : () -> Void
 
 	var timeSinceLastPressed = NSDate().timeIntervalSince1970
 
-	let dhtHandler : DHT;
-
-
 	init(buttonPressed :  @escaping ()-> Void){
 		buttonPressedHandler = buttonPressed
-
-		dht22 = gpios[PIN_DHT22]!
-		dhtHandler = DHT(pin : dht22)
 
 		redLED = gpios[PIN_LED_RED]!
 		redLED.direction = .OUT
@@ -70,11 +62,5 @@ class GPIOHandler {
 			relaySwitch.value = 0
 		}
 	}
-
-	func getTempAndHumidity() -> (temperature: Double, humidity: Double) {
-		return dhtHandler.read(debug : true)
-	}
-
-    
 
 }

@@ -87,19 +87,22 @@ func blockingReadLineFromSerialPort(fd : Int32) -> String{
 	}
 }
 
-let arguments = CommandLine.arguments
 
-if(arguments.count < 2){
-	print("Insufficent arguments, need Serial Port name");
-	exit(1)
-}
+//Call this function from your main.swift with Commandline.arguments
 
-var serialPortName : String = arguments[1];
+func testMainFunction(arguments : [String]){
 
-var fd : Int32 = openSerialPort(portName : serialPortName)
+	if(arguments.count < 2){
+		print("Insufficent arguments, need Serial Port name");
+		exit(1)
+	}
 
-if(fd == -1){
-	print("Error in opening port " + serialPortName);
+	let serialPortName : String = arguments[1];
+
+	let fd : Int32 = openSerialPort(portName : serialPortName)
+
+	if(fd == -1){
+		print("Error in opening port " + serialPortName);
 	} else{
 		print(serialPortName + " opened successfully");
 	}
@@ -108,9 +111,10 @@ if(fd == -1){
 
 
 	while(true){
-		var result : String = blockingReadLineFromSerialPort(fd : fd)
+		let result : String = blockingReadLineFromSerialPort(fd : fd)
 		print(result)
 	}
 }
+
 
 

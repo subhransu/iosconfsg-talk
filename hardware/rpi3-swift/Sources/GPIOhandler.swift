@@ -1,5 +1,7 @@
 import SwiftyGPIO
 import Foundation
+import SwiftLinuxSerial
+
 
 class GPIOHandler {	
 	
@@ -17,12 +19,10 @@ class GPIOHandler {
 	var redLED : GPIO = GPIO(name: "P27",id: 27)
 	var button : GPIO = GPIO(name: "P22",id: 22)
 
-	var serialFileDescriptor : Int32
-
 	var buttonPressedHandler : () -> Void
 	var tempHumdHandler : (Float, Float) -> Void
 
-
+	var serialHandler : SwiftLinuxSerial
 	var timeSinceLastPressed = NSDate().timeIntervalSince1970
 
 	init(tempHumdSerialPort : String, receiveTempHumdData : @escaping (Float, Float) -> Void, buttonPressed :  @escaping ()-> Void){
@@ -33,14 +33,14 @@ class GPIOHandler {
 		relaySwitch.direction = .OUT
 		button.direction = .IN
 
-		serialFileDescriptor = openSerialPort(portName : tempHumdSerialPort)
-		
-		if(serialFileDescriptor == SERIAL_OPEN_FAIL){
-			print("Opening serial port " + tempHumdSerialPort + " failed")
-		} else {
+		serialHandler = SwiftLinuxSerial(serialPortName : tempHumdSerialPort)
+
+		let status = serialHandler.openPort(receive : true, transmit : false)
+
+		if(status.openSuccess){
 			print("Serial port " + tempHumdSerialPort + " opened successfully")
-			
-			setSerialPortSettings(fd : serialFileDescriptor, charsToReadBeforeReturn : SIZE_BYTES_READ_BLOCKING)
+
+			serialHandler.setPortSettings(receiveBaud : SwiftLinuxSerialBaud.BAUD_B9600, transmitBaud : SwiftLinuxSerialBaud.BAUD_B9600, charsToReadBeforeReturn : 1)
 
 			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
 			//Obtain Void pointer to self
@@ -60,7 +60,10 @@ class GPIOHandler {
 
         	//Pass observer to the C function for it to call outside
         	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
-        }
+		} else {
+			print("Opening serial port " + tempHumdSerialPort + " failed")
+		}
+		
 
         button.onRaising{
     		gpio in
@@ -81,7 +84,7 @@ class GPIOHandler {
 
 	func pollSerial(){
 		while(true){
-			let result : String = blockingReadLineFromSerialPort(fd : serialFileDescriptor)
+			let result : String = serialHandler.readLineFromPortBlocking()
 
 			let resultTrimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)
 			

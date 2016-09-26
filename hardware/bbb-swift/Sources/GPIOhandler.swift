@@ -3,17 +3,19 @@ import Foundation
 
 class GPIOHandler {	
 	
-	let PIN_LED_RED = GPIOName.P9
-	let PIN_RELAY_SWITCH = GPIOName.P10
-	let PIN_BUTTON = GPIOName.P17
-
 	let DEBOUNCE_DELAY = 0.3
 
-	let gpios = SwiftyGPIO.GPIOs(for:.BeagleBoneBlack)
+	/* 
+		We do not use:
+		let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
+		var gp = gpios[.P17]!
 
-	var redLED : GPIO
-	var relaySwitch : GPIO
-	var button : GPIO
+		as that seems to cause segmentation faults
+
+	*/
+	var relaySwitch : GPIO = GPIO(name: "P17",id: 17)
+	var redLED : GPIO = GPIO(name: "P27",id: 27)
+	var button : GPIO = GPIO(name: "P22",id: 22)
 
 	var serialFileDescriptor : Int32
 
@@ -27,14 +29,8 @@ class GPIOHandler {
 		buttonPressedHandler = buttonPressed
 		tempHumdHandler = receiveTempHumdData
 
-
-		redLED = gpios[PIN_LED_RED]!
 		redLED.direction = .OUT
-
-		relaySwitch = gpios[PIN_RELAY_SWITCH]!
 		relaySwitch.direction = .OUT
-
-		button = gpios[PIN_BUTTON]!
 		button.direction = .IN
 
 		serialFileDescriptor = openSerialPort(portName : tempHumdSerialPort)

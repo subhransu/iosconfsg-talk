@@ -7,17 +7,15 @@ class GPIOHandler {
 	
 	let DEBOUNCE_DELAY = 0.3
 
-	/* 
-		We do not use:
-		let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
-		var gp = gpios[.P17]!
+	let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
 
-		as that seems to cause segmentation faults
+	let PIN_RELAY_SWITCH : GPIOName = GPIOName.P17
+	let PIN_RED_LED : GPIOName = GPIOName.P27
+	let PIN_BUTTON : GPIOName = GPIOName.P22
 
-	*/
-	var relaySwitch : GPIO = GPIO(name: "P17",id: 17)
-	var redLED : GPIO = GPIO(name: "P27",id: 27)
-	var button : GPIO = GPIO(name: "P22",id: 22)
+	var relaySwitch : GPIO
+	var redLED : GPIO
+	var button : GPIO
 
 	var buttonPressedHandler : () -> Void
 	var tempHumdHandler : (Float, Float) -> Void
@@ -29,8 +27,12 @@ class GPIOHandler {
 		buttonPressedHandler = buttonPressed
 		tempHumdHandler = receiveTempHumdData
 
-		redLED.direction = .OUT
+		relaySwitch = gpios[PIN_RELAY_SWITCH]!
+		redLED = gpios[PIN_RED_LED]!
+		button = gpios[PIN_BUTTON]!
+
 		relaySwitch.direction = .OUT
+		redLED.direction = .OUT
 		button.direction = .IN
 
 		serialHandler = SwiftLinuxSerial(serialPortName : tempHumdSerialPort)

@@ -13,7 +13,21 @@ Connected parts without the relay.
 ![Screen](connection/iosconfsgiot.png)
 Schematic of the connected parts. Relay portion is not expanded for brevity.
 
-## Teensy Arduino for temparature and humidity
+## Components Used
+
+Assume one component for each unless otherwise stated
+
+1. Raspberry Pi 3 with microSD card
+2. Push button
+3. 2x 10K ohm pull-up resistor for button and DHT22
+4. 5mm Red LED
+5. 5mm Yellow LED as debug stand-in for relay
+6. 2x 220ohm resistors for LEDs
+7. Teensy 3.2
+8. DHT-22 temperature and humidity sensor
+9. SSR-40 DA relay
+
+## Teensy Arduino for temperature and humidity
 
 This is the Arduino code that runs on the Teensy portion of the demo. The Teensy obtains the temperature and humidity data from the DHT22 and outputs them to both the USB-UART0 and the UART1 pins.
 

@@ -17,7 +17,7 @@ This is the Arduino code that runs on the Teensy portion of the demo. The Teensy
 
 2. Download and install [Teensyduino](https://www.pjrc.com/teensy/td_download.html)
 
-3. Just open `arduino-temp-humidity.ino`.
+3. Just open `arduino-temp-humidity.ino` in the `arduino-temp-humidity` directory.
 
 4. Change Board type to Teensy 3.2 then upload the code into the board.
 
@@ -27,7 +27,7 @@ Ubuntu 16.04 is required to be installed on the Raspberry Pi 3 to use Swift. Ras
 
 ### Install Ubuntu on Raspberry Pi 3
 
-To get Ubuntu installed on the Raspberry Pi, follow the instructions in this [link](https://wiki.ubuntu.com/ARM/RaspberryPi). 
+To get Ubuntu installed on the Raspberry Pi, follow the instructions in this [link](https://wiki.ubuntu.com/ARM/RaspberryPi). Do a full system update with `sudo apt-get update` and `sudo apt-get upgrade` before proceeding.
 
 ### Network bug on Raspberry Pi 3 Ubuntu after system update
 

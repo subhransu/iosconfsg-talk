@@ -25,7 +25,8 @@ Assume one component for each unless otherwise stated
 6. 2x 220ohm resistors for LEDs
 7. Teensy 3.2
 8. DHT-22 temperature and humidity sensor
-9. SSR-40 DA relay
+9. PL2303 USB Serial adapter
+10. SSR-40 DA relay
 
 ## Teensy Arduino for temperature and humidity
 

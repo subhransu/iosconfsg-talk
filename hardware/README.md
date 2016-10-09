@@ -10,6 +10,9 @@ Full connection including the solid-state relay to control a mains device that i
 ![Screen](connection/top.jpg)
 Connected parts without the relay.
 
+![Screen](connection/iosconfsgiot.png)
+Schematic of the connected parts. Relay portion is not expanded for brevity.
+
 ## Teensy Arduino for temparature and humidity
 
 This is the Arduino code that runs on the Teensy portion of the demo. The Teensy obtains the temperature and humidity data from the DHT22 and outputs them to both the USB-UART0 and the UART1 pins.

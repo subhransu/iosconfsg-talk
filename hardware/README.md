@@ -21,11 +21,26 @@ This is the Arduino code that runs on the Teensy portion of the demo. The Teensy
 
 4. Change Board type to Teensy 3.2 then upload the code into the board.
 
-## Setting up Swift on RPi 3
+## Setting up Raspberry Pi 3
+
+Ubuntu 16.04 is required to be installed on the Raspberry Pi 3 to use Swift. Raspbian cannot be used as certain dependencies are not available.
 
 ### Install Ubuntu on Raspberry Pi 3
 
-...
+To get Ubuntu installed on the Raspberry Pi, follow the instructions in this [link](https://wiki.ubuntu.com/ARM/RaspberryPi). 
+
+### Network bug on Raspberry Pi 3 Ubuntu after system update
+
+Reference from a [comment of this page link](http://dev.iachieved.it/iachievedit/building-swift-3-0-on-a-raspberry-pi-3/#comment-2072). The `eth0` ethernet adapter has been changed to something like `enxp...`.
+
+```bash
+#Get new name of network adapter
+ifconfig -a
+#enxp....
+sudo nano /etc/network/interfaces.d/50-cloud-init.cfg
+#Replace eth 0 with the name of your new adapter enxp...
+sudo reboot
+```
 
 ### Install Swift 3 on Ubuntu on Raspberry Pi 3
 Instructions from this section is referenced from this [link](http://dev.iachieved.it/iachievedit/swift-3-0-on-raspberry-pi-2-and-3/).
@@ -51,4 +66,13 @@ nano ~/.profile
 export PATH=$HOME/swift-3.0/usr/bin:$PATH
 ```
 
-###
+### Compiling and running the code
+
+```bash
+git clone https://github.com/subhransu/iosconfsg-talk
+cd iosconfsg-talk/hardware/rpi3-swift
+swift build
+
+#Run the program. Root permissions is required to access the GPIO.
+sudo ./.build/debug/rpi3-swift
+```

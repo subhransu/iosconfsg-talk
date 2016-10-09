@@ -4,8 +4,11 @@ This directory contains the code and hardware schematic portion of the demo. Tem
 
 ## Images
 
-![Screen](connection/iosconfsgiot.png)
-Schematic of the connected parts. Relay portion is not expanded for brevity.
+![Screen](connection/top-with-relay.jpg)
+Full connection including the solid-state relay to control a mains device that is plugged into the plug.
+
+![Screen](connection/top.jpg)
+Connected parts without the relay.
 
 ## Teensy Arduino for temparature and humidity
 

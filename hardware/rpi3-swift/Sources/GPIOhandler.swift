@@ -58,8 +58,8 @@ class GPIOHandler {
  				let actualSelf = Unmanaged<GPIOHandler>.fromOpaque(externalObserver!).takeUnretainedValue()
 				actualSelf.pollSerial()
             	
-            	return nil
-        	}
+				return nil
+			}
 
         	//Pass observer to the C function for it to call outside
         	//Function Definition in C: int pthread_create(pthread_t * thread, const pthread_attr_t * attr, void * (*start_routine)(void *), void * arg);

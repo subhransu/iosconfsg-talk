@@ -44,12 +44,13 @@ class GPIOHandler {
 
 			serialHandler.setPortSettings(receiveBaud : SwiftLinuxSerialBaud.BAUD_B9600, transmitBaud : SwiftLinuxSerialBaud.BAUD_B9600, charsToReadBeforeReturn : 1)
 
+			//C: pthread_t backgroundPthread;
+			var backgroundPthread = pthread_t()
+
 			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
 			//Obtain Void pointer to self
 			//To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
 			let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
-
-			var backgroundPthread = pthread_t()
 
 			let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
 				externalObserver in
@@ -61,6 +62,7 @@ class GPIOHandler {
         	}
 
         	//Pass observer to the C function for it to call outside
+        	//Function Definition in C: int pthread_create(pthread_t * thread, const pthread_attr_t * attr, void * (*start_routine)(void *), void * arg);
         	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
 		} else {
 			print("Opening serial port " + tempHumdSerialPort + " failed")

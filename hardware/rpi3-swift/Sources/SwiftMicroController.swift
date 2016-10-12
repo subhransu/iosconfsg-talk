@@ -7,7 +7,7 @@ enum GPIOState: Int {
 	case Off = 0
 }
 
-class GPIOHandler {	
+class SwiftMicroController {	
 	
 	let DEBOUNCE_DELAY = 0.3
 	var buttonPressedHandler : () -> Void
@@ -39,26 +39,32 @@ class GPIOHandler {
 
 			serialHandler.setPortSettings(receiveBaud : SwiftLinuxSerialBaud.BAUD_B9600, transmitBaud : SwiftLinuxSerialBaud.BAUD_B9600, charsToReadBeforeReturn : 1)
 
-			//C: pthread_t backgroundPthread;
-			var backgroundPthread = pthread_t()
-
-			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
-			//Obtain Void pointer to self
-			//To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
-			let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
-
-			let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
-				externalObserver in
- 				
- 				let actualSelf = Unmanaged<GPIOHandler>.fromOpaque(externalObserver!).takeUnretainedValue()
-				actualSelf.pollSerial()
-            	
-				return nil
+			let queue = dispatch_queue_create("SerialPortPollThread", nil)
+			
+			dispatch_async(queue) {
+    			self.pollSerial()
 			}
 
-        	//Pass observer to the C function for it to call outside
-        	//Function Definition in C: int pthread_create(pthread_t * thread, const pthread_attr_t * attr, void * (*start_routine)(void *), void * arg);
-        	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
+			// //C: pthread_t backgroundPthread;
+			// var backgroundPthread = pthread_t()
+
+			// //Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
+			// //Obtain Void pointer to self
+			// //To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
+			// let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
+
+			// let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
+			// 	externalObserver in
+ 				
+ 		// 		let actualSelf = Unmanaged<SwiftMicroController>.fromOpaque(externalObserver!).takeUnretainedValue()
+			// 	actualSelf.pollSerial()
+            	
+			// 	return nil
+			// }
+
+   //      	//Pass observer to the C function for it to call outside
+   //      	//Function Definition in C: int pthread_create(pthread_t * thread, const pthread_attr_t * attr, void * (*start_routine)(void *), void * arg);
+   //      	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
 		} else {
 			print("Opening serial port " + tempHumdSerialPort + " failed")
 		}
@@ -108,7 +114,7 @@ class GPIOHandler {
 	}
 }
 
-extension GPIOHandler: GPIOPinManagerDelegate {
+extension SwiftMicroController: GPIOPinManagerDelegate {
 	func didPressButton() {
 		//Debouncing logic, only call closure when needed
 		let currentTime = NSDate().timeIntervalSince1970

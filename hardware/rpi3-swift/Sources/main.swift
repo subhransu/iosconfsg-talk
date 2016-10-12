@@ -2,7 +2,7 @@ import Glibc
 print("Program Started")
 
 func onButtonPressed(){
-	gpioHandler.toggleState()
+	swiftMicroControllerObj.toggleState()
 }
 
 
@@ -13,8 +13,8 @@ func recvTempHumdData(temperature : Float, humidity : Float){
 	print("Temperature: " + temperature + "°C, Humidity: " + humidity + "%")
 }
 
-let gpioHandler = GPIOHandler(tempHumdSerialPort : "/dev/ttyUSB0", receiveTempHumdData : recvTempHumdData, buttonPressed: onButtonPressed)
-gpioHandler.setupInitialState()
+let swiftMicroControllerObj = SwiftMicroController(tempHumdSerialPort : "/dev/ttyUSB0", receiveTempHumdData : recvTempHumdData, buttonPressed: onButtonPressed)
+swiftMicroControllerObj.setupInitialState()
 
 while(true){
 	//This is to keep the main thread running if not the program will end prematurely

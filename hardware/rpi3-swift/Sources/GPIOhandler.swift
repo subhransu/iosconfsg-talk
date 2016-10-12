@@ -2,7 +2,7 @@ import SwiftyGPIO
 import Foundation
 import SwiftLinuxSerial
 
-enum GPIOState {
+enum GPIOState: Int {
 	case On = 1
 	case Off = 0
 }

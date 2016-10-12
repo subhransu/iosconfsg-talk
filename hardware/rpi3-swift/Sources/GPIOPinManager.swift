@@ -19,9 +19,17 @@ class GPIOPinManager {
 	let button: GPIO 
 
 	init() {
-		relaySwitch = gpios[PIN_RELAY_SWITCH]
-		redLED = gpios[PIN_RED_LED]
-		button = gpios[PIN_BUTTON]
+		if let switchValue = gpios[PIN_RELAY_SWITCH] {
+			relaySwitch = switchValue
+		}
+
+		if let redLEDValue = gpios[PIN_RED_LED] {
+			redLED = redLEDValue
+		}
+
+		if let buttonPINValue = gpios[PIN_BUTTON] {
+			button = buttonPINValue
+		}
 
 		relaySwitch.direction = .OUT
 		redLED.direction = .OUT
@@ -29,7 +37,7 @@ class GPIOPinManager {
 
 		button.onRaising{
     		gpio in		
-    		self.buttonDelegate.didPressButton()
+    		self?.buttonDelegate.didPressButton()
 		}
 	}
 

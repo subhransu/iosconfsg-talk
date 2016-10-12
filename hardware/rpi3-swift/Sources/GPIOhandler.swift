@@ -19,6 +19,8 @@ class GPIOHandler {
 		return GPIOPinManager()
 	}()
 
+	var currentState = GPIOState.On
+
 	init(tempHumdSerialPort : String, receiveTempHumdData : @escaping (Float, Float) -> Void, buttonPressed :  @escaping ()-> Void){
 		buttonPressedHandler = buttonPressed
 		tempHumdHandler = receiveTempHumdData
@@ -26,7 +28,7 @@ class GPIOHandler {
 		serialHandler = SwiftLinuxSerial(serialPortName : tempHumdSerialPort)
 
 		let status = serialHandler.openPort(receive : true, transmit : false)
-		buttonManager.delegate = self
+		buttonManager.buttonDelegate = self
 
 		if(status.openSuccess){
 			print("Serial port " + tempHumdSerialPort + " opened successfully")
@@ -78,6 +80,28 @@ class GPIOHandler {
 			}
 		}
 	}	
+
+	func setupInitialState() {
+		changeState(currentState: currentState)
+	}
+
+	func changeState(currentState: GPIOState) {
+		switch (currentState) {
+			case .On:
+				buttonManager.changeRedState(newState: .On)
+		    	buttonManager.changeRelayState(newState: .Off)
+				print("Button pressed, red up, relay down")
+			case .Off:
+				buttonManager.changeRedState(newState: .Off)
+		    	buttonManager.changeRelayState(newState: .On)
+		    	print("Button pressed, red down, relay up")
+		}
+	}
+
+	public func toggleState() {
+		currentState = currentState == .On ? .On : Off
+		changeState(currentState: currentState)
+	}
 }
 
 extension GPIOHandler: GPIOPinManagerDelegate {

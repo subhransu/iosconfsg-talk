@@ -39,32 +39,32 @@ class SwiftMicroController {
 
 			serialHandler.setPortSettings(receiveBaud : SwiftLinuxSerialBaud.BAUD_B9600, transmitBaud : SwiftLinuxSerialBaud.BAUD_B9600, charsToReadBeforeReturn : 1)
 
-			let dispatch_async = DispatchQueue(label: "SerialPortPollThread")
+			// let dispatch_async = DispatchQueue(label: "SerialPortPollThread")
 			
-			dispatch_async.main.async {
-    			self.pollSerial()
-			}
-
-			// //C: pthread_t backgroundPthread;
-			// var backgroundPthread = pthread_t()
-
-			// //Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
-			// //Obtain Void pointer to self
-			// //To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
-			// let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
-
-			// let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
-			// 	externalObserver in
- 				
- 		// 		let actualSelf = Unmanaged<SwiftMicroController>.fromOpaque(externalObserver!).takeUnretainedValue()
-			// 	actualSelf.pollSerial()
-            	
-			// 	return nil
+			// dispatch_async.main.async {
+   //  			self.pollSerial()
 			// }
 
-   //      	//Pass observer to the C function for it to call outside
-   //      	//Function Definition in C: int pthread_create(pthread_t * thread, const pthread_attr_t * attr, void * (*start_routine)(void *), void * arg);
-   //      	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
+			//C: pthread_t backgroundPthread;
+			var backgroundPthread = pthread_t()
+
+			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
+			//Obtain Void pointer to self
+			//To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
+			let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
+
+			let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
+				externalObserver in
+ 				
+ 				let actualSelf = Unmanaged<SwiftMicroController>.fromOpaque(externalObserver!).takeUnretainedValue()
+				actualSelf.pollSerial()
+            	
+				return nil
+			}
+
+        	//Pass observer to the C function for it to call outside
+        	//Function Definition in C: int pthread_create(pthread_t * thread, const pthread_attr_t * attr, void * (*start_routine)(void *), void * arg);
+        	pthread_create(&backgroundPthread, nil, pthreadFunc, observer)
 		} else {
 			print("Opening serial port " + tempHumdSerialPort + " failed")
 		}

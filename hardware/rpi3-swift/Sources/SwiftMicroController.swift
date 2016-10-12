@@ -39,9 +39,9 @@ class SwiftMicroController {
 
 			serialHandler.setPortSettings(receiveBaud : SwiftLinuxSerialBaud.BAUD_B9600, transmitBaud : SwiftLinuxSerialBaud.BAUD_B9600, charsToReadBeforeReturn : 1)
 
-			let queue = dispatch_queue_create("SerialPortPollThread", nil)
+			let dispatch_async = DispatchQueue(label: "SerialPortPollThread")
 			
-			dispatch_async(queue) {
+			dispatch_async.main.async {
     			self.pollSerial()
 			}
 

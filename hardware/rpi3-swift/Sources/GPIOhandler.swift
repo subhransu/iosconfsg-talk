@@ -16,9 +16,17 @@ class GPIOHandler {
 	let PIN_RED_LED  = GPIOName.P27
 	let PIN_BUTTON = GPIOName.P22
 
-	let relaySwitch = gpios[PIN_RELAY_SWITCH]
-	let redLED =  gpios[PIN_RED_LED]
-	let button = gpios[PIN_BUTTON]	
+	let relaySwitch: GPIO = {
+		return self.gpios[PIN_RELAY_SWITCH]
+	}()
+
+	let redLED: GPIO =  { 
+		return self.gpios[PIN_RED_LED]
+	}()
+
+	let button: GPIO = {
+		return self.gpios[PIN_BUTTON]	
+	}()
 
 	var buttonPressedHandler : () -> Void
 	var tempHumdHandler : (Float, Float) -> Void

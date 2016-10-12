@@ -10,22 +10,22 @@ class GPIOHandler {
 	
 	let DEBOUNCE_DELAY = 0.3
 
-	let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
+	// let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
 
 	let PIN_RELAY_SWITCH = GPIOName.P17
 	let PIN_RED_LED  = GPIOName.P27
 	let PIN_BUTTON = GPIOName.P22
 
 	let relaySwitch: GPIO = {
-		return self.gpios[PIN_RELAY_SWITCH]
+		return SwiftyGPIO.GPIOs(for:.RaspberryPi2)[PIN_RELAY_SWITCH]
 	}()
 
 	let redLED: GPIO =  { 
-		return self.gpios[PIN_RED_LED]
+		return SwiftyGPIO.GPIOs(for:.RaspberryPi2)[PIN_RED_LED]
 	}()
 
 	let button: GPIO = {
-		return self.gpios[PIN_BUTTON]	
+		return SwiftyGPIO.GPIOs(for:.RaspberryPi2)[PIN_BUTTON]	
 	}()
 
 	var buttonPressedHandler : () -> Void
@@ -114,10 +114,10 @@ class GPIOHandler {
 	}
 
 	func changeRedState(newState : GPIOState){
-		redLED.value = newState.rawValue ? .On : .Off
+		redLED.value = newState.rawValue
 	}
 
 	func changeRelayState(newState : GPIOState){
-		relaySwitch.value = newState.rawValue ? .On : .Off
+		relaySwitch.value = newState.rawValue
 	}
 }

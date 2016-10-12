@@ -27,8 +27,8 @@ func recvTempHumdData(temperature : Float, humidity : Float){
 }
 
 let gpioHandler = GPIOHandler(tempHumdSerialPort : "/dev/ttyUSB0", receiveTempHumdData : recvTempHumdData, buttonPressed: onButtonPressed)
-gpioHandler.changeRedState(newState:true)
-gpioHandler.changeRelayState(newState:false)
+gpioHandler.changeRedState(newState: .On)
+gpioHandler.changeRelayState(newState: .Off)
 
 while(true){
 	//This is to keep the main thread running if not the program will end prematurely

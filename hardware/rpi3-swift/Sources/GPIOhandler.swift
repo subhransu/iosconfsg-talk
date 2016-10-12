@@ -6,6 +6,7 @@ enum GPIOState: Int {
 	case On = 1
 	case Off = 0
 }
+
 class GPIOHandler {	
 	
 	let DEBOUNCE_DELAY = 0.3
@@ -15,7 +16,7 @@ class GPIOHandler {
 	var serialHandler : SwiftLinuxSerial
 	var timeSinceLastPressed = NSDate().timeIntervalSince1970
 	
-	lazy var buttonManager = {
+	lazy var buttonManager: GPIOPinManager?  = {
 		return GPIOPinManager()
 	}()
 
@@ -28,7 +29,10 @@ class GPIOHandler {
 		serialHandler = SwiftLinuxSerial(serialPortName : tempHumdSerialPort)
 
 		let status = serialHandler.openPort(receive : true, transmit : false)
-		buttonManager.buttonDelegate = self
+
+		if let buttonManager = buttonManager {
+			buttonManager.buttonDelegate = self
+		}
 
 		if(status.openSuccess){
 			print("Serial port " + tempHumdSerialPort + " opened successfully")
@@ -88,12 +92,12 @@ class GPIOHandler {
 	func changeState(currentState: GPIOState) {
 		switch (currentState) {
 			case .On:
-				buttonManager.changeRedState(newState: .On)
-		    	buttonManager.changeRelayState(newState: .Off)
+				buttonManager?.changeRedState(newState: .On)
+		    	buttonManager?.changeRelayState(newState: .Off)
 				print("Button pressed, red up, relay down")
 			case .Off:
-				buttonManager.changeRedState(newState: .Off)
-		    	buttonManager.changeRelayState(newState: .On)
+				buttonManager?.changeRedState(newState: .Off)
+		    	buttonManager?.changeRelayState(newState: .On)
 		    	print("Button pressed, red down, relay up")
 		}
 	}

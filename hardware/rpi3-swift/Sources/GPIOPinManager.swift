@@ -7,7 +7,7 @@ protocol GPIOPinManagerDelegate {
 }
 
 class GPIOPinManager {
-	let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
+	let gpios: [GPIOName: GPIO?] = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
 	var buttonDelegate: GPIOPinManagerDelegate?
 
 	let PIN_RELAY_SWITCH = GPIOName.P17
@@ -18,10 +18,24 @@ class GPIOPinManager {
 	let redLED: GPIO 
 	let button: GPIO 
 
-	init() {
-		relaySwitch = gpios[PIN_RELAY_SWITCH]!
-		redLED = gpios[PIN_RED_LED]!
-		button = gpios[PIN_BUTTON]!
+	init?() {
+		guard let switchValue = gpios[PIN_RELAY_SWITCH] else {
+			return nil
+		}
+
+		relaySwitch = switchValue
+
+		guard let redLEDValue = gpios[PIN_RED_LED] else {
+			return nil
+		}
+
+		redLED = redLEDValue
+
+		guard let buttonValue = gpios[PIN_BUTTON] else {
+			return nil
+		}
+
+		button = buttonValue
 
 		relaySwitch.direction = .OUT
 		redLED.direction = .OUT

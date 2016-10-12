@@ -7,13 +7,13 @@ func onButtonPressed(){
 	currentState = !currentState
 
 	if(currentState){
-		gpioHandler.changeRedState(newState:true)
-    	gpioHandler.changeRelayState(newState:false)
+		gpioHandler.changeRedState(newState: .On)
+    	gpioHandler.changeRelayState(newState: .Off)
 		print("Button pressed, red up, relay down")
 
 	} else {
-		gpioHandler.changeRedState(newState:false)
-    	gpioHandler.changeRelayState(newState:true)
+		gpioHandler.changeRedState(newState: .Off)
+    	gpioHandler.changeRelayState(newState: .On)
     	print("Button pressed, red down, relay up")
 	}
 }

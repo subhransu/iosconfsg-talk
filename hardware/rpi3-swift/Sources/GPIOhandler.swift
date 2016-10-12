@@ -2,20 +2,23 @@ import SwiftyGPIO
 import Foundation
 import SwiftLinuxSerial
 
-
+enum GPIOState {
+	case On = 1
+	case Off = 0
+}
 class GPIOHandler {	
 	
 	let DEBOUNCE_DELAY = 0.3
 
 	let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
 
-	let PIN_RELAY_SWITCH : GPIOName = GPIOName.P17
-	let PIN_RED_LED : GPIOName = GPIOName.P27
-	let PIN_BUTTON : GPIOName = GPIOName.P22
+	let PIN_RELAY_SWITCH = GPIOName.P17
+	let PIN_RED_LED  = GPIOName.P27
+	let PIN_BUTTON = GPIOName.P22
 
-	var relaySwitch : GPIO
-	var redLED : GPIO
-	var button : GPIO
+	let relaySwitch = gpios[PIN_RELAY_SWITCH]
+	let redLED =  gpios[PIN_RED_LED]
+	let button = gpios[PIN_BUTTON]	
 
 	var buttonPressedHandler : () -> Void
 	var tempHumdHandler : (Float, Float) -> Void
@@ -26,10 +29,6 @@ class GPIOHandler {
 	init(tempHumdSerialPort : String, receiveTempHumdData : @escaping (Float, Float) -> Void, buttonPressed :  @escaping ()-> Void){
 		buttonPressedHandler = buttonPressed
 		tempHumdHandler = receiveTempHumdData
-
-		relaySwitch = gpios[PIN_RELAY_SWITCH]!
-		redLED = gpios[PIN_RED_LED]!
-		button = gpios[PIN_BUTTON]!
 
 		relaySwitch.direction = .OUT
 		redLED.direction = .OUT
@@ -89,12 +88,10 @@ class GPIOHandler {
 	func pollSerial(){
 		while(true){
 			let result : String = serialHandler.readLineFromPortBlocking()
-
-			let resultTrimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)
-			
+			let resultTrimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)			
 			let resultArr : [String] = resultTrimmed.components(separatedBy: " ")
 
-			if(resultArr.count == 2){
+			if resultArr.count == 2 {
 				let temperatureString : String = resultArr[0]
 				let humidityString : String = resultArr[1];
 
@@ -108,20 +105,11 @@ class GPIOHandler {
 		}
 	}
 
-	func changeRedState(newState : Bool){
-		if(newState){
-			redLED.value = 1
-		} else {
-			redLED.value = 0
-		}
+	func changeRedState(newState : GPIOState){
+		redLED.value = newState.rawValue ? .On : .Off
 	}
 
-	func changeRelayState(newState : Bool){
-		if(newState){
-			relaySwitch.value = 1
-		} else {
-			relaySwitch.value = 0
-		}
+	func changeRelayState(newState : GPIOState){
+		relaySwitch.value = newState.rawValue ? .On : .Off
 	}
-
 }

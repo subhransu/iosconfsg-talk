@@ -37,7 +37,7 @@ class GPIOPinManager {
 
 		button.onRaising{
     		gpio in		
-    		self?.buttonDelegate.didPressButton()
+    		self.buttonDelegate?.didPressButton()
 		}
 	}
 

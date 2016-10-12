@@ -9,42 +9,24 @@ enum GPIOState: Int {
 class GPIOHandler {	
 	
 	let DEBOUNCE_DELAY = 0.3
-
-	// let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
-
-	let PIN_RELAY_SWITCH = GPIOName.P17
-	let PIN_RED_LED  = GPIOName.P27
-	let PIN_BUTTON = GPIOName.P22
-
-	let relaySwitch: GPIO = {
-		return SwiftyGPIO.GPIOs(for:.RaspberryPi2)[PIN_RELAY_SWITCH]
-	}()
-
-	let redLED: GPIO =  { 
-		return SwiftyGPIO.GPIOs(for:.RaspberryPi2)[PIN_RED_LED]
-	}()
-
-	let button: GPIO = {
-		return SwiftyGPIO.GPIOs(for:.RaspberryPi2)[PIN_BUTTON]	
-	}()
-
 	var buttonPressedHandler : () -> Void
 	var tempHumdHandler : (Float, Float) -> Void
 
 	var serialHandler : SwiftLinuxSerial
 	var timeSinceLastPressed = NSDate().timeIntervalSince1970
+	
+	lazy var buttonManager = {
+		return GPIOPinManager()
+	}()
 
 	init(tempHumdSerialPort : String, receiveTempHumdData : @escaping (Float, Float) -> Void, buttonPressed :  @escaping ()-> Void){
 		buttonPressedHandler = buttonPressed
 		tempHumdHandler = receiveTempHumdData
-
-		relaySwitch.direction = .OUT
-		redLED.direction = .OUT
-		button.direction = .IN
-
+		
 		serialHandler = SwiftLinuxSerial(serialPortName : tempHumdSerialPort)
 
 		let status = serialHandler.openPort(receive : true, transmit : false)
+		buttonManager.delegate = self
 
 		if(status.openSuccess){
 			print("Serial port " + tempHumdSerialPort + " opened successfully")
@@ -74,22 +56,6 @@ class GPIOHandler {
 		} else {
 			print("Opening serial port " + tempHumdSerialPort + " failed")
 		}
-		
-
-        button.onRaising{
-    		gpio in
-		
-    		//Debouncing logic, only call closure when needed
-			let currentTime = NSDate().timeIntervalSince1970
-			let elapsedTime = currentTime - self.timeSinceLastPressed
-
-			if(elapsedTime > self.DEBOUNCE_DELAY){
-				self.timeSinceLastPressed = currentTime
-    			self.buttonPressedHandler()
-			}
-		}
-
-
 	}
 
 
@@ -111,13 +77,18 @@ class GPIOHandler {
 
 			}
 		}
-	}
+	}	
+}
 
-	func changeRedState(newState : GPIOState){
-		redLED.value = newState.rawValue
-	}
+extension GPIOHandler: GPIOPinManagerDelegate {
+	func didPressButton() {
+		//Debouncing logic, only call closure when needed
+		let currentTime = NSDate().timeIntervalSince1970
+		let elapsedTime = currentTime - self.timeSinceLastPressed
 
-	func changeRelayState(newState : GPIOState){
-		relaySwitch.value = newState.rawValue
+		if(elapsedTime > self.DEBOUNCE_DELAY){
+			self.timeSinceLastPressed = currentTime
+    		self.buttonPressedHandler()
+		}
 	}
 }

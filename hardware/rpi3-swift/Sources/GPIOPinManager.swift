@@ -27,7 +27,7 @@ class GPIOPinManager {
 		redLED.direction = .OUT
 		button.direction = .IN
 
-		button.onRaising{
+		button.onRaising {
     		gpio in		
     		self.buttonDelegate?.didPressButton()
 		}

@@ -99,7 +99,7 @@ class GPIOHandler {
 	}
 
 	public func toggleState() {
-		currentState = currentState == .On ? .On : .Off
+		currentState = currentState == .On ? .Off : .On
 		changeState(currentState: currentState)
 	}
 }

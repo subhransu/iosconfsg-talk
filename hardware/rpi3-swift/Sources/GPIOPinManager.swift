@@ -7,7 +7,7 @@ protocol GPIOPinManagerDelegate {
 }
 
 class GPIOPinManager {
-	let gpios: [GPIOName: GPIO?] = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
+	let gpios = SwiftyGPIO.GPIOs(for:.RaspberryPi2)
 	var buttonDelegate: GPIOPinManagerDelegate?
 
 	let PIN_RELAY_SWITCH = GPIOName.P17

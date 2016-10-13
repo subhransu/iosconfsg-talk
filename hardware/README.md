@@ -50,19 +50,6 @@ Ubuntu 16.04 is required to be installed on the Raspberry Pi 3 to use Swift. Ras
 
 To get Ubuntu installed on the Raspberry Pi, follow the instructions in this [link](https://wiki.ubuntu.com/ARM/RaspberryPi). Do a full system update with `sudo apt-get update` and `sudo apt-get upgrade` before proceeding.
 
-### Network bug on Raspberry Pi 3 Ubuntu after system update
-
-Reference from a [comment of this page link](http://dev.iachieved.it/iachievedit/building-swift-3-0-on-a-raspberry-pi-3/#comment-2072). The `eth0` ethernet adapter will change to something like `enxp...` after the reboot which causes problems for the network configuration files.
-
-```bash
-#Get new name of network adapter
-ifconfig -a
-#enxp....
-sudo nano /etc/network/interfaces.d/50-cloud-init.cfg
-#Replace eth 0 with the name of your new adapter enxp...
-sudo reboot
-```
-
 ### Install Swift 3 on Ubuntu on Raspberry Pi 3
 Instructions from this section is referenced from this [link](http://dev.iachieved.it/iachievedit/swift-3-0-on-raspberry-pi-2-and-3/).
 

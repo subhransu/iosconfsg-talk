@@ -77,7 +77,7 @@ export PATH=$HOME/swift-3.0/usr/bin:$PATH
 ### Compiling and running the code
 
 ```bash
-git clone https://github.com/subhransu/iosconfsg-talk
+git clone git@github.com:subhransu/iosconfsg-talk.git
 cd iosconfsg-talk/hardware/rpi3-swift
 swift build
 

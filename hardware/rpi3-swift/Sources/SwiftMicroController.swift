@@ -42,7 +42,7 @@ class SwiftMicroController {
 			// let dispatch_async = DispatchQueue(label: "SerialPortPollThread")
 			
 			// dispatch_async.main.async {
-   //  			self.pollSerial()
+   // 			 	self.pollSerial()
 			// }
 
 			//C: pthread_t backgroundPthread;
@@ -51,12 +51,12 @@ class SwiftMicroController {
 			//Reference from http://stackoverflow.com/questions/33260808/swift-proper-use-of-cfnotificationcenteraddobserver-w-callback
 			//Obtain Void pointer to self
 			//To avoid:  "error: a C function pointer cannot be formed from a closure that captures context"
-			let observer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
+			let observer : UnsafeMutableRawPointer = UnsafeMutableRawPointer(Unmanaged.passRetained(self).toOpaque())
 
 			let pthreadFunc: @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer? = {
 				externalObserver in
  				
- 				let actualSelf = Unmanaged<SwiftMicroController>.fromOpaque(externalObserver!).takeUnretainedValue()
+ 				let actualSelf : SwiftMicroController = Unmanaged<SwiftMicroController>.fromOpaque(externalObserver!).takeUnretainedValue()
 				actualSelf.pollSerial()
             	
 				return nil

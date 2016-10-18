@@ -1,0 +1,11 @@
+[Unit]
+Description=To start rpi3-swift program for iosconf on startup
+Before=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=idle
+RemainAfterExit=yes
+ExecStart=/home/ubuntu/iosconfsg-talk/hardware/rpi3-swift/.build/debug/rpi3-swift

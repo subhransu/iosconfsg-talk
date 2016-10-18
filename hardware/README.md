@@ -87,7 +87,7 @@ sudo ./.build/debug/rpi3-swift
 
 ### Starting program on boot
 
-For a conference setting it is better to have the app start automatically on power on without manual intervention.
+For a conference setting it is better to have the app start automatically on power on without manual intervention. I have prepared a systemd service file for this purpose. You just have to copy to your system directory and enable it.
 
 ```bash
 #Within the rpi3-swift directory

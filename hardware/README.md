@@ -84,3 +84,13 @@ swift build
 #Run the program. Root permissions is required to access the GPIO.
 sudo ./.build/debug/rpi3-swift
 ```
+
+### Starting program on boot
+
+For a conference setting it is better to have the app start automatically on power on without manual intervention.
+
+```bash
+#Within the rpi3-swift directory
+sudo cp iot-startup.service /etc/systemd/system/
+sudo systemctl enable iot-startup.service
+```

@@ -1,0 +1,35 @@
+PODS:
+  - Charts (3.0.0):
+    - Charts/Core (= 3.0.0)
+  - Charts/Core (3.0.0)
+  - CocoaAsyncSocket (7.5.0):
+    - CocoaAsyncSocket/GCD (= 7.5.0)
+  - CocoaAsyncSocket/GCD (7.5.0)
+  - CocoaMQTT (1.0.10):
+    - CocoaAsyncSocket (~> 7.5.0)
+    - MSWeakTimer (~> 1.1.0)
+  - MSWeakTimer (1.1.0)
+
+DEPENDENCIES:
+  - Charts (from `https://github.com/danielgindi/Charts.git`, branch `master`)
+  - CocoaMQTT
+
+EXTERNAL SOURCES:
+  Charts:
+    :branch: master
+    :git: https://github.com/danielgindi/Charts.git
+
+CHECKOUT OPTIONS:
+  Charts:
+    :commit: 47b9793c4206bf747c16dc8e6a1042ee9932ea37
+    :git: https://github.com/danielgindi/Charts.git
+
+SPEC CHECKSUMS:
+  Charts: 3f0da988b104c8e5f069fcef55da699f597dac67
+  CocoaAsyncSocket: 3baeb1ddd969f81cf9fca81053ae49ef2d1cbbfa
+  CocoaMQTT: ac6730349bebc7ceb42a62297eaf8291fce8aa93
+  MSWeakTimer: 9426150f933b80ed3acf3f6d228e4b61f0e303c8
+
+PODFILE CHECKSUM: 83aeb33bb0a3795f8cfa5156770c59e9c44d022e
+
+COCOAPODS: 1.1.0.rc.3

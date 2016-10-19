@@ -3,6 +3,7 @@ print("Program Started")
 import Kitura
 
 func onButtonPressed(){
+	system("mosquitto_pub -t 'hello' -m 'hello swift' -q 1")
 	swiftMicroControllerObj.toggleState()
 }
 

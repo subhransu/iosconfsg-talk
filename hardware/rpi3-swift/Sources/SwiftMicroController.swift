@@ -84,7 +84,7 @@ class SwiftMicroController {
 				let temperature : Float = Float(temperatureString)!
 				let humidity : Float = Float(humidityString)!
 				
-				system("mosquitto_pub -t 'hello' -m humidity-\(humidity) -q 1")
+				system("mosquitto_pub -t 'hello' -m temperature-\(temperature) -q 1")
 
 				//Send data to callback
 				tempHumdHandler(temperature, humidity)

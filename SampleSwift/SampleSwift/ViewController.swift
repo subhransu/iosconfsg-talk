@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         
         toggleLabelText()
         
-        SPPlatformAuthNetworkHelper().GET(urlString: "http://192.168.2.2:8090", successHandler: { (response) in
+        SPPlatformAuthNetworkHelper().GET(urlString: "http://192.168.123.200:8090", successHandler: { (response) in
                 print(response)
             }) { (error) in
                 print(error)
@@ -53,7 +53,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        mqtt = CocoaMQTT(clientId: "hello", host: "192.168.2.2", port: 1883)
+        mqtt = CocoaMQTT(clientId: "hello", host: "192.168.123.200", port: 1883)
         mqtt?.keepAlive = 90
         mqtt?.username = "hello"
         mqtt?.password = "test"
